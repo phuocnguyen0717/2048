@@ -22,5 +22,7 @@ public class TileBoard : MonoBehaviour
     {
         Tile tile = Instantiate(tilePrefab, tileGrid.transform);
         tile.SetState(tileStates[0], 2);
+        tile.Spawn(tileGrid.GetRandomEmptyCell());
+        tiles.Add(tile);
     }
 }
