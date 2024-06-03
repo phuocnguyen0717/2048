@@ -3,7 +3,7 @@ using UnityEngine;
 public class TileRow : MonoBehaviour
 {
     public TileCell[] cells { get; private set; }
-    void Start()
+    private void Awake()
     {
         cells = GetComponentsInChildren<TileCell>();
     }

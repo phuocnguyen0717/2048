@@ -14,7 +14,6 @@ public class TileGrid : MonoBehaviour
         cells = GetComponentsInChildren<TileCell>();
         rows = GetComponentsInChildren<TileRow>();
     }
-
     private void Start()
     {
         for (int y = 0; y < rows.Length; y++)
@@ -25,5 +24,4 @@ public class TileGrid : MonoBehaviour
             }
         }
     }
-
 }

@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class TileBoard : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public Tile tilePrefab;
+    public TileState[] tileStates;
+    private TileGrid tileGrid;
+    private List<Tile> tiles;
+    void Awake()
+    {
+        tileGrid = GetComponentInChildren<TileGrid>();
+        tiles = new List<Tile>(16);
+    }
     void Start()
     {
-        
+        CreateTile();
+        CreateTile();
     }
-
-    // Update is called once per frame
-    void Update()
+    void CreateTile()
     {
-        
+        Tile tile = Instantiate(tilePrefab, tileGrid.transform);
+        tile.SetState(tileStates[0], 2);
     }
 }
