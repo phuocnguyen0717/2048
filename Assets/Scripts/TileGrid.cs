@@ -6,9 +6,9 @@ public class TileGrid : MonoBehaviour
 {
     public TileCell[] cells { get; private set; }
     public TileRow[] rows { get; private set; }
-    public int size => cells.Length;
-    public int height => rows.Length;
-    public int width => size / height;
+    public int Size => cells.Length;
+    public int Height => rows.Length;
+    public int Width => Size / Height;
     void Awake()
     {
         cells = GetComponentsInChildren<TileCell>();
@@ -20,9 +20,31 @@ public class TileGrid : MonoBehaviour
         {
             for (int x = 0; x < rows[y].cells.Length; x++)
             {
-                rows[y].cells[x].coordinates = new Vector2Int(y, x);
+                rows[y].cells[x].coordinates = new Vector2Int(x, y);
             }
         }
+    }
+    public TileCell GetCell(int x, int y)
+    {
+        if (x >= 0 && x < Width && y >= 0 && y < Height)
+        {
+            return rows[y].cells[x];
+        }
+        else
+        {
+            return null;
+        }
+    }
+    public TileCell GetCell(Vector2Int coordinates)
+    {
+        return GetCell(coordinates.x, coordinates.y);
+    }
+    public TileCell GetAdjacentCell(TileCell cell, Vector2Int direction)
+    {
+        Vector2Int coordinates = cell.coordinates;
+        coordinates.x += direction.x;
+        coordinates.y -= direction.y;
+        return GetCell(coordinates);
     }
     public TileCell GetRandomEmptyCell()
     {

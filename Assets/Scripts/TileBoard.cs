@@ -25,4 +25,57 @@ public class TileBoard : MonoBehaviour
         tile.Spawn(tileGrid.GetRandomEmptyCell());
         tiles.Add(tile);
     }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            MoveTiles(Vector2Int.up, 0, 1, 1, 1);
+        }
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            MoveTiles(Vector2Int.down, 0, 1, tileGrid.Height - 2, -1);
+        }
+        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            MoveTiles(Vector2Int.left, 1, 1, 0, 1);
+        }
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            MoveTiles(Vector2Int.right, tileGrid.Width - 2, -1, 0, 1);
+        }
+    }
+    private void MoveTiles(Vector2Int direction, int startX, int incrementX, int startY, int incrementY)
+    {
+        for (int x = startX; x >= 0 && x < tileGrid.Width; x += incrementX)
+        {
+            for (int y = startY; y >= 0 && y < tileGrid.Height; y += incrementY)
+            {
+                TileCell cell = tileGrid.GetCell(x, y);
+
+                if (cell.occupied)
+                {
+                    MoveTile(cell.tile, direction);
+                }
+            }
+        }
+    }
+    private void MoveTile(Tile tile, Vector2Int direction)
+    {
+        TileCell newCell = null;
+        TileCell adjacent = tileGrid.GetAdjacentCell(tile.cell, direction);
+        while (adjacent != null)
+        {
+            if (adjacent.occupied)
+            {
+                break;
+            }
+            newCell = adjacent;
+            adjacent = tileGrid.GetAdjacentCell(adjacent, direction);
+
+        }
+        if (newCell != null)
+        {
+            tile.MoveTo(newCell);
+        }
+    }
 }
