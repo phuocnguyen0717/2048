@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -71,11 +70,11 @@ public class TileBoard : MonoBehaviour
             }
             newCell = adjacent;
             adjacent = tileGrid.GetAdjacentCell(adjacent, direction);
-
         }
         if (newCell != null)
         {
             tile.MoveTo(newCell);
         }
     }
+
 }
