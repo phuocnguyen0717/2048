@@ -32,7 +32,6 @@ public class Tile : MonoBehaviour
         {
             this.cell.tile = null;
         }
-
         this.cell = cell;
         this.cell.tile = this;
 
