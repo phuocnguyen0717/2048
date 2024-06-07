@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public TileBoard board;
+    [SerializeField] TextMeshProUGUI bestScoreText;
+    [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] CanvasGroup gameOver;
+    private int score = 0;
     private void Start()
     {
+        SetScore(0);
+        bestScoreText.text = LoadBestScore().ToString();
+
         gameOver.interactable = false;
         NewGame();
     }
@@ -23,6 +30,8 @@ public class GameManager : MonoBehaviour
     }
     public void GameOver()
     {
+        SetScore(0);
+        bestScoreText.text = LoadBestScore().ToString();
         board.enabled = false;
         StartCoroutine(Fade(gameOver, 1f, 1f));
     }
@@ -39,5 +48,27 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         canvasGroup.alpha = to;
+    }
+    public void IncreaseScore(int points)
+    {
+        SetScore(score + points);
+    }
+    private void SetScore(int score)
+    {
+        this.score = score;
+        scoreText.text = score.ToString();
+        SaveBestScore();
+    }
+    private void SaveBestScore()
+    {
+        int bestScore = LoadBestScore();
+        if (score > bestScore)
+        {
+            PlayerPrefs.SetInt("bestScore", score);
+        }
+    }
+    private int LoadBestScore()
+    {
+        return PlayerPrefs.GetInt("bestScore", 0);
     }
 }
