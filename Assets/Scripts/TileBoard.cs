@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class TileBoard : MonoBehaviour
 {
-    public GameManager gameManager;
     public Tile tilePrefab;
     public TileState[] tileStates;
     private TileGrid tileGrid;
@@ -14,6 +14,10 @@ public class TileBoard : MonoBehaviour
     {
         tileGrid = GetComponentInChildren<TileGrid>();
         tiles = new List<Tile>(16);
+    }
+    void Update()
+    {
+        HandleInputAndMoveTiles();
     }
     public void ClearBoard()
     {
@@ -33,8 +37,9 @@ public class TileBoard : MonoBehaviour
         tile.SetState(tileStates[0], 2);
         tile.Spawn(tileGrid.GetRandomEmptyCell());
         tiles.Add(tile);
+        AnimateTile(tile);
     }
-    void Update()
+    private void HandleInputAndMoveTiles()
     {
         if (!waiting)
         {
@@ -109,11 +114,13 @@ public class TileBoard : MonoBehaviour
         tiles.Remove(a);
         a.Merge(b.cell);
 
+
         int index = Mathf.Clamp(IndexOf(b.state) + 1, 0, tileStates.Length - 1);
         int number = b.number * 2;
         b.SetState(tileStates[index], number);
+        AnimateTile(b);
 
-        gameManager.IncreaseScore(number);
+        GameManager.Instance.IncreaseScore(number);
     }
     private int IndexOf(TileState state)
     {
@@ -142,7 +149,7 @@ public class TileBoard : MonoBehaviour
         }
         if (CheckForGameOver())
         {
-            gameManager.GameOver();
+            GameManager.Instance.GameOver();
         }
     }
     private bool CheckForGameOver()
@@ -175,5 +182,14 @@ public class TileBoard : MonoBehaviour
             }
         }
         return true;
+    }
+
+    private void AnimateTile(Tile tile)
+    {
+        float originalScale = tile.transform.localScale.x;
+        float targetScale = originalScale * 1.5f;
+        float duration = 0.005f;
+
+        tile.transform.DOScale(targetScale, duration).SetLoops(2, LoopType.Yoyo);
     }
 }

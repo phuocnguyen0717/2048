@@ -1,15 +1,27 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; set; }
     public TileBoard board;
     [SerializeField] TextMeshProUGUI bestScoreText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] CanvasGroup gameOver;
     private int score = 0;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        else
+        {
+            Destroy(Instance);
+        }
+    }
     private void Start()
     {
         SetScore(0);

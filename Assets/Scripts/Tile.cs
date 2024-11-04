@@ -57,6 +57,7 @@ public class Tile : MonoBehaviour
         cell.tile.locked = true;
 
         StartCoroutine(Animate(cell.transform.position, true));
+        // Dotween Here -- Animation when merge?
     }
     private IEnumerator Animate(Vector3 to, bool merging)
     {
