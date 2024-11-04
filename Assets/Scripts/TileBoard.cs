@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public class TileBoard : MonoBehaviour
 {
@@ -9,11 +10,18 @@ public class TileBoard : MonoBehaviour
     public TileState[] tileStates;
     private TileGrid tileGrid;
     private List<Tile> tiles;
+    [SerializeField] public TextMeshProUGUI scoreText;
+    [SerializeField] public TextMeshProUGUI bestScoreText;
+
     private bool waiting;
     void Awake()
     {
         tileGrid = GetComponentInChildren<TileGrid>();
         tiles = new List<Tile>(16);
+    }
+    private void Start()
+    {
+        bestScoreText.text = GameManager.LoadBestScore().ToString();
     }
     void Update()
     {
@@ -109,6 +117,21 @@ public class TileBoard : MonoBehaviour
     {
         return a.number == b.number && !b.locked;
     }
+    private void OnEnable()
+    {
+
+        GameManager.OnScoreChanged += UpdateScoreUI;
+    }
+    private void OnDisable()
+    {
+
+        GameManager.OnScoreChanged -= UpdateScoreUI;
+    }
+    private void UpdateScoreUI(int newScore)
+    {
+        scoreText.text = newScore.ToString();
+        Debug.Log("Score Updated: " + newScore);
+    }
     private void Merge(Tile a, Tile b)
     {
         tiles.Remove(a);
@@ -119,7 +142,6 @@ public class TileBoard : MonoBehaviour
         int number = b.number * 2;
         b.SetState(tileStates[index], number);
         AnimateTile(b);
-
         GameManager.Instance.IncreaseScore(number);
     }
     private int IndexOf(TileState state)

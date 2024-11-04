@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -5,9 +6,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; set; }
+    public static event Action<int> OnScoreChanged;
     public TileBoard board;
-    [SerializeField] TextMeshProUGUI bestScoreText;
-    [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] CanvasGroup gameOver;
     private int score = 0;
     private void Awake()
@@ -15,17 +15,16 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(Instance);
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(Instance);
+            Destroy(gameObject);
         }
     }
     private void Start()
     {
         SetScore(0);
-        bestScoreText.text = LoadBestScore().ToString();
 
         gameOver.interactable = false;
         NewGame();
@@ -43,7 +42,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         SetScore(0);
-        bestScoreText.text = LoadBestScore().ToString();
+        board.bestScoreText.text = LoadBestScore().ToString();
         board.enabled = false;
         StartCoroutine(Fade(gameOver, 1f, 1f));
     }
@@ -68,7 +67,7 @@ public class GameManager : MonoBehaviour
     private void SetScore(int score)
     {
         this.score = score;
-        scoreText.text = score.ToString();
+        OnScoreChanged?.Invoke(score);
         SaveBestScore();
     }
     private void SaveBestScore()
@@ -79,7 +78,7 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("bestScore", score);
         }
     }
-    private int LoadBestScore()
+    public static int LoadBestScore()
     {
         return PlayerPrefs.GetInt("bestScore", 0);
     }
