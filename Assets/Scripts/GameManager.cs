@@ -8,8 +8,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; set; }
     public static event Action<int> OnScoreChanged;
     public TileBoard board;
-    [SerializeField] CanvasGroup gameOver;
+    [SerializeField] CanvasGroup gameOverCanvasGroup;
     private int score = 0;
+    [SerializeField] private Animation animationHelper;
+
     private void Awake()
     {
         if (Instance == null)
@@ -26,13 +28,13 @@ public class GameManager : MonoBehaviour
     {
         SetScore(0);
 
-        gameOver.interactable = false;
+        gameOverCanvasGroup.interactable = false;
         NewGame();
     }
     public void NewGame()
     {
-        gameOver.alpha = 0f;
-        gameOver.interactable = true;
+        gameOverCanvasGroup.alpha = 0f;
+        gameOverCanvasGroup.interactable = true;
 
         board.ClearBoard();
         board.CreateTile();
@@ -44,21 +46,13 @@ public class GameManager : MonoBehaviour
         SetScore(0);
         board.bestScoreText.text = LoadBestScore().ToString();
         board.enabled = false;
-        StartCoroutine(Fade(gameOver, 1f, 1f));
+        StartCoroutine(Fade(1f, 1f, 0.5f));
     }
-    private IEnumerator Fade(CanvasGroup canvasGroup, float to, float delay)
+    private IEnumerator Fade(float to, float delay, float duration)
     {
         yield return new WaitForSeconds(delay);
-        float from = canvasGroup.alpha;
-        float elapsed = 0f;
-        float duration = 0.5f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(from, to, elapsed / duration);
-            yield return null;
-        }
-        canvasGroup.alpha = to;
+        StartCoroutine(animationHelper.LerpAlpha(
+        gameOverCanvasGroup, gameOverCanvasGroup.alpha, to, duration));
     }
     public void IncreaseScore(int points)
     {

@@ -14,6 +14,10 @@ public class TileGrid : MonoBehaviour
     }
     private void Start()
     {
+        InitializeCellCoordinates();
+    }
+    private void InitializeCellCoordinates()
+    {
         for (int y = 0; y < rows.Length; y++)
         {
             for (int x = 0; x < rows[y].cells.Length; x++)

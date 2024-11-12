@@ -11,11 +11,12 @@ public class Tile : MonoBehaviour
     public bool locked { get; set; }
     private Image backgroundColor;
     private TextMeshProUGUI text;
-
+    [SerializeField] private Animation animationHelper;
     void Awake()
     {
         backgroundColor = GetComponent<Image>();
         text = GetComponentInChildren<TextMeshProUGUI>();
+        animationHelper = FindObjectOfType<Animation>();
     }
     public void SetState(TileState state, int number)
     {
@@ -45,7 +46,7 @@ public class Tile : MonoBehaviour
         }
         this.cell = cell;
         this.cell.tile = this;
-        StartCoroutine(Animate(cell.transform.position, false));
+        Animate(cell.transform.position, false, 0.1f);
     }
     public void Merge(TileCell cell)
     {
@@ -56,22 +57,11 @@ public class Tile : MonoBehaviour
         this.cell = null;
         cell.tile.locked = true;
 
-        StartCoroutine(Animate(cell.transform.position, true));
-        // Dotween Here -- Animation when merge?
+        Animate(cell.transform.position, true, 0.1f);
     }
-    private IEnumerator Animate(Vector3 to, bool merging)
+    private void Animate(Vector3 to, bool merging, float duration)
     {
-        Vector3 from = transform.position;
-        float elapsed = 0f;
-        float duration = 0.1f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            transform.position = Vector3.Lerp(from, to, elapsed / duration);
-            yield return null;
-        }
-        transform.position = to;
-
+        StartCoroutine(animationHelper.LerpPosition(transform, transform.position, to, duration));
         if (merging)
         {
             Destroy(gameObject);
