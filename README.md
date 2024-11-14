@@ -1,1 +1,1 @@
-https://phuocquang.itch.io/2048
+Link trải nghiệm game: https://phuocquang.itch.io/2048
